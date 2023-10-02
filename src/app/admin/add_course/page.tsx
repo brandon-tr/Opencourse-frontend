@@ -9,14 +9,17 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminDashboard() {
-  const data = await serverSideFetch("/admin/view_course_create");
+  const check = serverSideFetch("/admin/view_course_create");
+  const peopleReq = serverSideFetch("/admin/get_user_select_options");
+
+  const [data, people] = await Promise.all([check, peopleReq]);
 
   if (data.error) {
     return <ErrorMessage error={data} />;
   }
   return (
     <>
-      <AddCourseForm />
+      <AddCourseForm selectOptions={people} />
     </>
   );
 }

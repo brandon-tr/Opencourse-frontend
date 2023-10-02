@@ -21,6 +21,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAlertStore } from "@/store/store";
 import { submitMultiFormRequest } from "@/utils/clientFetch";
 import ApiErrors from "@/components/feedback/api-errors";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const MAX_FILE_SIZE = parseInt(process.env.NEXT_PUBLIC_MAX_FILE_SIZE!);
 const ACCEPTED_IMAGE_TYPES =
@@ -30,7 +37,7 @@ const generalInformation = z.object({
   title: z.string().max(100),
   description: z.string().max(255),
   slug: z.string().max(100),
-  author: z.string().max(255),
+  user_id: z.number(),
   image: z
     .any()
     .refine((files) => {
@@ -61,19 +68,20 @@ const generalInformation = z.object({
     }, ".jpg, .jpeg, .png and .webp files are accepted."),
 });
 
-export default function AddCourseForm() {
+export default function AddCourseForm({ selectOptions }: any) {
+  console.log(selectOptions);
   const alert = useAlertStore();
   const [generalErrors, setGeneralErrors] = useState<ErrorInterface>();
+  const [selectedUser, setSelectedUser] = useState<any>();
   const form = useForm<z.infer<typeof generalInformation>>({
     resolver: zodResolver(generalInformation),
     defaultValues: {
       title: "",
       description: "",
       slug: "",
-      author: "",
+      user_id: selectOptions.default,
     },
   });
-
   const imageRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -82,6 +90,17 @@ export default function AddCourseForm() {
       form.getValues("title").toLowerCase().replace(/ /g, "-"),
     );
   }, [form.watch("title")]);
+
+  useEffect(() => {
+    setSelectedUser(
+      selectOptions.users.find(
+        (user: { id: number }) => user.id === form.getValues("user_id"),
+      ),
+    );
+    if (typeof form.watch("user_id") === "string") {
+      form.setValue("user_id", parseInt(String(form.watch("user_id"))));
+    }
+  }, [form.watch("user_id")]);
 
   const onSubmitGeneral: SubmitHandler<any> = async (data) => {
     await submitMultiFormRequest(
@@ -214,13 +233,62 @@ export default function AddCourseForm() {
                 <div className="col-span-full mt-2">
                   <FormField
                     control={form.control}
-                    name="author"
+                    name="user_id"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Author</FormLabel>
-                        <FormControl>
-                          <FormInput placeholder="Author" {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger>
+                              {selectedUser && (
+                                <div className="flex items-center text-white">
+                                  <Image
+                                    src={selectedUser.avatar}
+                                    alt="User Avatar"
+                                    className="h-5 w-5 flex-shrink-0 rounded-full"
+                                    width={30}
+                                    height={30}
+                                  />
+                                  <span className="ml-3 block truncate">
+                                    {selectedUser.name}
+                                  </span>
+                                </div>
+                              )}
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className={"bg-gray-700"}>
+                            {selectOptions.users.map((user: any) => (
+                              <SelectItem
+                                key={user.id}
+                                value={parseInt(user.id)}
+                                className={classNames(
+                                  user.id === selectedUser?.id
+                                    ? "p-2 border-2 border-blue-500 bg-accent"
+                                    : "",
+                                  "",
+                                )}
+                              >
+                                <div className="flex items-center text-white">
+                                  <Image
+                                    src={user.avatar}
+                                    alt="User Avatar"
+                                    className={classNames(
+                                      user.id === selectedUser?.id
+                                        ? "h-8 w-8"
+                                        : "h-5 w-5",
+                                      "flex-shrink-0 rounded-full",
+                                    )}
+                                    width={30}
+                                    height={30}
+                                  />
+                                  <span className="ml-3 block truncate">
+                                    {user.name}
+                                  </span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}

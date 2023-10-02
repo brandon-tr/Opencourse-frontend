@@ -22,6 +22,18 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Loading from "@/components/feedback/Loading";
 import classNames from "@/utils/classNames";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 
 const MAX_FILE_SIZE = parseInt(process.env.NEXT_PUBLIC_MAX_FILE_SIZE!);
 const ACCEPTED_IMAGE_TYPES =
@@ -522,11 +534,41 @@ export default function UserSettingsForm(data: UserProfileInterface) {
           </p>
         </div>
 
-        <form className="flex items-start md:col-span-2">
-          <Button type="submit" size={"sm"} variant={"destructive"}>
-            Yes, delete my account
-          </Button>
-        </form>
+        <div className="flex items-start md:col-span-2">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button type="submit" size={"sm"} variant={"destructive"}>
+                Yes, delete my account
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent
+              className={"flex flex-col justify-center items-center w-full"}
+            >
+              <AlertDialogHeader className={"items-center"}>
+                <ExclamationTriangleIcon
+                  className={"w-10 h-10 mr-2 text-destructive"}
+                />
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription className={"text-center"}>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className={"flex flex-col gap-3"}>
+                <AlertDialogAction asChild>
+                  <Button type="submit" size={"sm"} variant={"destructive"}>
+                    Yes, delete my account
+                  </Button>
+                </AlertDialogAction>
+                <AlertDialogCancel asChild>
+                  <Button type="submit" size={"sm"} variant={"default"}>
+                    Cancel
+                  </Button>
+                </AlertDialogCancel>
+              </div>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
     </div>
   );

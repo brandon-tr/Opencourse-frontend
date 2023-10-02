@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           'className="rounded-md bg-indigo-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"',
         destructive:
-          "rounded-md bg-red-500/60 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-400",
+          "rounded-md bg-red-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-400",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
