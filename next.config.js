@@ -3,6 +3,9 @@ const nextConfig = {
   images: {
     domains: ["images.unsplash.com", "ui-avatars.com", "localhost"],
   },
+  experimental: {
+    serverActions: true,
+  },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({

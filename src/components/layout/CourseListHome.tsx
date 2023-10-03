@@ -3,6 +3,7 @@ import Image from "next/image";
 const CourseListHome: React.FC<{
   response: any[];
 }> = ({ response }) => {
+  console.log(response);
   return (
     <ul
       role="list"
@@ -29,11 +30,6 @@ const CourseListHome: React.FC<{
                 className="pointer-events-none object-cover w-full"
                 fill={true}
               />
-              {/*<img*/}
-              {/*    src={video.imageUrl}*/}
-              {/*    alt=""*/}
-              {/*    className="pointer-events-none object-cover"*/}
-              {/*/>*/}
             </div>
 
             <button

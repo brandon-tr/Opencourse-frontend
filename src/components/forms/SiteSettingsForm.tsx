@@ -176,7 +176,7 @@ export default function SiteSettingsForm(siteSettings: SiteInformation) {
                       alt=""
                       priority={true}
                       layout="fill"
-                      className="flex-none rounded-lg bg-gray-800 object-contain"
+                      className="flex-none rounded-lg object-contain"
                     />
                   </div>
                   <div>

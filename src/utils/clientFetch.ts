@@ -3,6 +3,7 @@
 import { CreateError, csrf } from "@/utils/utils";
 import { getCookie } from "cookies-next";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { deleteCookies } from "@/app/user/profile/actions";
 
 async function handleJson(
   request: Response,
@@ -37,6 +38,53 @@ async function handleJson(
     alert.setShow(true);
   }
 }
+
+export const submitPostRequest = async (
+  endpoint: string,
+  setError: React.Dispatch<React.SetStateAction<ErrorInterface | undefined>>,
+  alert: AlertInterface,
+  deleteAccount?: boolean,
+) => {
+  try {
+    await csrf();
+    let token = getCookie("XSRF-TOKEN");
+    if (token) {
+      const request = await fetch(
+        process.env.NEXT_PUBLIC_API_URL_BASE + endpoint,
+        {
+          method: "POST",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-XSRF-TOKEN": token,
+          },
+          credentials: "include",
+        },
+      );
+      if (request.ok) {
+        if (deleteAccount) {
+          try {
+            await deleteCookies();
+          } catch (e) {
+            setError(CreateError("Error deleting cookies", "cookies"));
+          }
+        }
+        const response = await request.json();
+        alert.setTitle("Success");
+        setError(undefined);
+        alert.setMessage(response.success);
+        alert.setVariant("success");
+        alert.setUsingTimer(true);
+        alert.setShow(true);
+      } else {
+        setError(
+          CreateError(process.env.NEXT_PUBLIC_UNKNOWN_ERROR + "", "unknown"),
+        );
+      }
+    }
+  } catch (e: any) {
+    setError(e);
+  }
+};
 
 export const submitMultiFormRequest = async (
   endpoint: string,

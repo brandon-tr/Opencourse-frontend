@@ -16,7 +16,11 @@ import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
 import { useAlertStore } from "@/store/store";
 import ApiErrors from "@/components/feedback/api-errors";
-import { submitFormRequest, submitMultiFormRequest } from "@/utils/clientFetch";
+import {
+  submitFormRequest,
+  submitMultiFormRequest,
+  submitPostRequest,
+} from "@/utils/clientFetch";
 import StackedList from "@/components/data-display/StackedList";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -95,7 +99,7 @@ const passwordFormSchema = z
   });
 
 const logOutOtherSessionsSchema = z.object({
-  password: z.string().min(8, "New password must be at least 8 characters"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 export default function UserSettingsForm(data: UserProfileInterface) {
@@ -104,6 +108,8 @@ export default function UserSettingsForm(data: UserProfileInterface) {
     useState<ErrorInterface>();
   const [passwordErrors, setPasswordErrors] = useState<ErrorInterface>();
   const [otherSessionErrors, setOtherSessionErrors] =
+    useState<ErrorInterface>();
+  const [deleteAccountErrors, setDeleteAccountErrors] =
     useState<ErrorInterface>();
   const alert = useAlertStore();
   const avatarRef = useRef<HTMLInputElement>(null);
@@ -162,6 +168,15 @@ export default function UserSettingsForm(data: UserProfileInterface) {
       setOtherSessionErrors,
       alert,
       router,
+    );
+  };
+
+  const deleteAccountSubmit = async () => {
+    await submitPostRequest(
+      "/user/delete_account/me",
+      setDeleteAccountErrors,
+      alert,
+      true,
     );
   };
 
@@ -556,7 +571,12 @@ export default function UserSettingsForm(data: UserProfileInterface) {
               </AlertDialogHeader>
               <div className={"flex flex-col gap-3"}>
                 <AlertDialogAction asChild>
-                  <Button type="submit" size={"sm"} variant={"destructive"}>
+                  <Button
+                    type="submit"
+                    size={"sm"}
+                    variant={"destructive"}
+                    onClick={deleteAccountSubmit}
+                  >
                     Yes, delete my account
                   </Button>
                 </AlertDialogAction>
