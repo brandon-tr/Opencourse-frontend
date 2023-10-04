@@ -5,7 +5,7 @@ import { ErrorMessage } from "@/components/feedback/ErrorMessage";
 export default async function Home() {
   const data = await serverSideFetch("/user/get_courses");
 
-  if (data.error) {
+  if (data?.error) {
     return <ErrorMessage error={data} />;
   } else if (!data || data.length <= 0) {
     return (

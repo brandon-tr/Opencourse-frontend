@@ -539,6 +539,15 @@ export default function UserSettingsForm(data: UserProfileInterface) {
 
       <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
+          {deleteAccountErrors && (
+            <div
+              className={
+                "text-base leading-7 col-span-full border-2 border-destructive p-3"
+              }
+            >
+              <ApiErrors messages={deleteAccountErrors} />
+            </div>
+          )}
           <h2 className="text-base font-semibold leading-7 text-white">
             Delete account
           </h2>
@@ -548,7 +557,6 @@ export default function UserSettingsForm(data: UserProfileInterface) {
             account will be deleted permanently.
           </p>
         </div>
-
         <div className="flex items-start md:col-span-2">
           <AlertDialog>
             <AlertDialogTrigger asChild>

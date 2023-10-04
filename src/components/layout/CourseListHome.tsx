@@ -3,7 +3,6 @@ import Image from "next/image";
 const CourseListHome: React.FC<{
   response: any[];
 }> = ({ response }) => {
-  console.log(response);
   return (
     <ul
       role="list"

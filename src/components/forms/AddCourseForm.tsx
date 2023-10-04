@@ -37,7 +37,7 @@ const generalInformation = z.object({
   title: z.string().max(100),
   description: z.string().max(255),
   slug: z.string().max(100),
-  user_id: z.number(),
+  user_id: z.any(),
   image: z
     .any()
     .refine((files) => {
@@ -83,6 +83,7 @@ export default function AddCourseForm({ selectOptions }: any) {
     },
   });
   const imageRef = useRef<HTMLInputElement>(null);
+  const user_id = form.watch("user_id");
 
   useEffect(() => {
     form.setValue(
@@ -92,15 +93,17 @@ export default function AddCourseForm({ selectOptions }: any) {
   }, [form.watch("title")]);
 
   useEffect(() => {
-    setSelectedUser(
-      selectOptions.users.find(
-        (user: { id: number }) => user.id === form.getValues("user_id"),
-      ),
-    );
-    if (typeof form.watch("user_id") === "string") {
+    if (user_id !== selectedUser?.id) {
+      setSelectedUser(
+        selectOptions.users.find(
+          (user: { id: number }) => user.id === form.getValues("user_id"),
+        ),
+      );
+    }
+    if (typeof user_id === "string") {
       form.setValue("user_id", parseInt(String(form.watch("user_id"))));
     }
-  }, [form.watch("user_id")]);
+  }, [form, selectOptions.users, selectedUser, user_id]);
 
   const onSubmitGeneral: SubmitHandler<any> = async (data) => {
     await submitMultiFormRequest(
@@ -260,7 +263,7 @@ export default function AddCourseForm({ selectOptions }: any) {
                             {selectOptions.users.map((user: any) => (
                               <SelectItem
                                 key={user.id}
-                                value={parseInt(user.id)}
+                                value={user.id}
                                 className={classNames(
                                   user.id === selectedUser?.id
                                     ? "p-2 border-2 border-blue-500 bg-accent"

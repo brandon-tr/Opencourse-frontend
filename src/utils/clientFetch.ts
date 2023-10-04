@@ -43,7 +43,7 @@ export const submitPostRequest = async (
   endpoint: string,
   setError: React.Dispatch<React.SetStateAction<ErrorInterface | undefined>>,
   alert: AlertInterface,
-  deleteAccount?: boolean,
+  deleteAccount: boolean,
 ) => {
   try {
     await csrf();
@@ -60,6 +60,7 @@ export const submitPostRequest = async (
           credentials: "include",
         },
       );
+      const response = await request.json();
       if (request.ok) {
         if (deleteAccount) {
           try {
@@ -68,7 +69,6 @@ export const submitPostRequest = async (
             setError(CreateError("Error deleting cookies", "cookies"));
           }
         }
-        const response = await request.json();
         alert.setTitle("Success");
         setError(undefined);
         alert.setMessage(response.success);
@@ -76,9 +76,13 @@ export const submitPostRequest = async (
         alert.setUsingTimer(true);
         alert.setShow(true);
       } else {
-        setError(
-          CreateError(process.env.NEXT_PUBLIC_UNKNOWN_ERROR + "", "unknown"),
-        );
+        if (response?.message) {
+          setError(CreateError(response.message, "unknown"));
+        } else {
+          setError(
+            CreateError(process.env.NEXT_PUBLIC_UNKNOWN_ERROR + "", "unknown"),
+          );
+        }
       }
     }
   } catch (e: any) {

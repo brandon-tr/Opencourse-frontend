@@ -12,7 +12,7 @@ export default async function AdminDashboard() {
   const data = await serverSideFetch("/admin/site_settings");
   if (process.env.NODE_ENV === "development") console.log(data);
 
-  if (data.error) {
+  if (data?.error) {
     return <ErrorMessage error={data} />;
   }
 

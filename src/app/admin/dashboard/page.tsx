@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function AdminDashboard() {
   const data = await serverSideFetch("/admin/stats");
 
-  if (data.error) {
+  if (data?.error) {
     return <ErrorMessage error={data} />;
   }
   return (

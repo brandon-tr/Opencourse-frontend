@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function AdminUserList() {
   const data = await serverSideFetch("/admin/get_user_list");
-  if (data.error) {
+  if (data?.error) {
     return <ErrorMessage error={data} />;
   }
   return (

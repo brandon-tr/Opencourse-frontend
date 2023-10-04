@@ -14,7 +14,7 @@ export default async function AdminDashboard() {
 
   const [data, people] = await Promise.all([check, peopleReq]);
 
-  if (data.error) {
+  if (data?.error) {
     return <ErrorMessage error={data} />;
   }
   return (

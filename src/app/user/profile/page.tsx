@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function ProfilePage() {
   const data = await serverSideFetch("/user/me");
   const userAgentInfo = [];
-  if (data.error) {
+  if (data?.error) {
     return ErrorMessage(data.error);
   }
   for (let i = 0; i < data.user_sessions.length; i++) {
